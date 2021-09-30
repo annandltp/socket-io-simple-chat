@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>Chat Bareng</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+        <style>
+            body {
+                font-family: Roboto;
+            }
+        </style>
+    </head>
+    <body class="bg-primary">
+        <div class="container mt-5">
+            <h5 class="text-white" style="text-align: center;">Chat Bareng</h5>
+            <div class="card">
+                <div class="card-body">
+                    <h5><span id="totalUserOnline"></span> Orang Online</h5>
+                    <div id="message-list" style="height: 40vh; overflow-y: auto;">
+                        <div class="card">
+                            <div class="card-body">
+                                Pesan Static
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                Pesan Static
+                            </div>
+                        </div>
+                    </div>
+                    <div id="form-message" class="mt-1">
+                        <div class="row">
+                            <div class="col-8">
+                                <input class="form-control" type="text" name="" id="message">
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-primary" id="sendMessage">Kirim Pesan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io()
+
+    socket.emit('join')
+    socket.on('message', (param) => {
+        alert('New Message');
+        $('#message-list').append(`
+            <div class="card mt-1">
+                <div class="card-body">
+                    ${param.text}    
+                </div>
+            </div>`
+        )
+    })
+    socket.on('countUserOnline', (countUserOnline) => {
+        $('#totalUserOnline').text(countUserOnline)
+        // alert(countUserOnline)
+    })
+    $("#sendMessage").click(() => {
+        socket.emit('message', {
+            text: $('#message').val()
+        })
+    })
+</script>
